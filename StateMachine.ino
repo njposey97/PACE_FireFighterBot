@@ -50,7 +50,7 @@ void URSense() {
 
 // Calculating the distance
   distance= duration0.034/2;
-  //distance in inches becasue we are stoopid murcan' hoo don kno metric sistem
+  //distance in inches
   distance *= 0.393701;
 
   Serial.print("Distance: ");
