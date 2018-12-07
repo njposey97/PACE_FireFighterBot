@@ -1,0 +1,18 @@
+void setup(){
+  pinMode(7, OUPTUT);
+  pinMode(8, OUTPUT);
+  pinMode(8, OUTPUT);
+}
+
+//This loop tests by moving motor forward then, after a delay, moves reverse direction
+void loop(){
+  digitalWrite(8, HIGH);
+  digitalWrite(7, LOW);
+  //Control Speed
+  analogWrite(9, 80);
+  delay(1000);
+  digitalWrite(8, LOW);
+  digitalWrite(7. HIGH);
+  analogWrite(9, 80);
+  delay(1000);
+}
