@@ -4,6 +4,7 @@
 
 //List Constants here
 const int IR_ARRAY[] = {}
+const int motor_speed = 250;
 		//ETC.
 //End Listing Constants
 
@@ -20,7 +21,7 @@ void move_straight()
   digitalWrite(8, HIGH);
   digitalWrite(7, LOW);
   //Control Speed
-  analogWrite(9, 80);
+  analogWrite(9, motor_speed);
   delay(1000);
 }
 
@@ -30,7 +31,7 @@ void move_backward()
   digitalWrite(8, LOW);
   digitalWrite(7, HIGH);
   //control Speed
-  analogWrite(9, 80); //pin 9 pulse modulation (variable speed)
+  analogWrite(9, motor_speed); //pin 9 pulse modulation (variable speed)
   delay(1000);
 }
 
@@ -99,17 +100,17 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(), ir_line_detect, RISING)		
   
   // Initialize pins for IR sensors
-  pinMode(1, ); // Front
-  pinMode(2, ); // Front
+  pinMode(IR_ARRAY[0], ); // Front
+  pinMode(IR_ARRAY[1], ); // Front
   
-  pinMode(3, ); // Left
-  pinMode(4, ); // Left
+  pinMode(IR_ARRAY[2], ); // Left
+  pinMode(IR_ARRAY[3], ); // Left
   
-  pinMode(5, ); // Right
-  pinMode(6, ); // Right
+  pinMode(IR_ARRAY[4], ); // Right
+  pinMode(IR_ARRAY[5], ); // Right
   
-  pinMode(7, ); // Back
-  pinMode(8, ); // Back
+  pinMode(IR_ARRAY[6], ); // Back
+  pinMode(IR_ARRAY[7], ); // Back
   
   // motor pins
   
@@ -128,6 +129,8 @@ void loop() {
   // put your main code here, to run repeatedly:
 
 
+	// As long as enemy is not detected, continue moving in triangular fashion
+  // (until enemy is sighted)
 	while (enemy_NotDetected) 
   {
   
@@ -138,11 +141,25 @@ void loop() {
     turn_left(); // LEFT		
   }
   
-	// if enemy is detected
+  
+	// if enemy is detected => then IR_Interrupt Enemy
   	// Align front with enemy
     
   	// Charge && stay aligned && make sure that robot is within bounds of sumo ring
+    
+    
+    
+  // if sumo ring bounds are detected => IR_Interrupt Lines/Bounds
+  	// Disable enemy detection
+    
+    // Move backwards
+    
+    // Rotate 180
+    
+    // Re-enable enemy detection
   
 }
+
+
 
 
