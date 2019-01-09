@@ -1,1 +1,91 @@
 
+#include <ArduinoRobot.h>
+
+
+bool opponent_not_detected = true;
+
+void setup()
+{
+  Robot.begin();
+
+  
+  pinMode(7, OUTPUT);
+  pinMode(8, OUTPUT);
+  pinMode(8, OUTPUT);
+}
+
+//This loop tests by moving motor forward then, after a delay, moves reverse direction
+void loop()
+{
+  // default movement algorithm goes here
+  
+  /*
+  while (opponent_not_detected)
+  {
+    //algorithm
+  }
+
+
+
+
+  
+  if (0)
+  {
+    move_straight();
+  }
+  else if (1)
+  {
+    move_backward();
+  }
+  */
+
+
+  
+  /*
+  digitalWrite(8, HIGH);
+  digitalWrite(7, LOW);
+  //Control Speed
+  analogWrite(9, 80);
+  delay(1000);
+  digitalWrite(8, LOW);
+  digitalWrite(7. HIGH);
+  analogWrite(9, 80);
+  delay(1000);
+  */
+}
+
+void move_straight()
+{
+  digitalWrite(8, HIGH);
+  digitalWrite(7, LOW);
+  //Control Speed
+  analogWrite(9, 80);
+  delay(1000);
+}
+
+void move_backward()
+{
+  digitalWrite(8, LOW);
+  digitalWrite(7, HIGH);
+  //copntrol Speed
+  analogWrite(9, 80); //pin 9 pulse modulation (variable speed)
+  delay(1000);
+}
+
+void turn_left()
+{
+    Robot.turn(-90); //make bot turn 90 degrees left
+    delay(1000);
+}
+
+void turn_right()
+{
+    Robot.turn(90); //make bot turn 90 degrees right
+    delay(1000);
+}
+
+void turn_180()
+{
+    Robot.turn(180); //make bot turn 180 degrees right
+    delay(1000);
+}
