@@ -1,0 +1,148 @@
+// ARDUINO CODE for Tofumo (Sumo bot) 
+#include <ArduinoRobot.h>
+
+
+//List Constants here
+const int IR_ARRAY[] = {}
+		//ETC.
+//End Listing Constants
+
+// List Variables here
+bool enemy_NotDetected = true;
+int motor_degree = 0;
+//End Listing Variables
+
+// List Functions here
+
+// Moves robot straight ahead (with respect to front)
+void move_straight()
+{
+  digitalWrite(8, HIGH);
+  digitalWrite(7, LOW);
+  //Control Speed
+  analogWrite(9, 80);
+  delay(1000);
+}
+
+// Moves robot backwards (with respect to front)
+void move_backward()
+{
+  digitalWrite(8, LOW);
+  digitalWrite(7, HIGH);
+  //control Speed
+  analogWrite(9, 80); //pin 9 pulse modulation (variable speed)
+  delay(1000);
+}
+
+// Turns robot to left
+void turn_left()
+{
+    Robot.turn(motor_degree); //make bot turn 90 degrees left
+    delay(1000);
+}
+
+// Turns robot to right
+void turn_right()
+{
+    Robot.turn(motor_degree); //make bot turn 90 degrees right
+    delay(1000);
+}
+
+void turn_180()
+{
+    Robot.turn(180); //make bot turn 180 degrees right
+    delay(1000);
+}
+
+void ir_enemy_charge(){
+	while(IR_ARRAY[0] == HIGH || IR_ARRAY[1] == HIGH){
+  	move_straight();
+  }
+  //If Enemy leaves... return to triangular movement
+  loop();
+}
+
+void ir_enemy_detect(){
+	//Determine while IR sensor was triggered HIGH
+  //Make that IR sensor the condition for the loop
+  //Assuming IR_ARRAY[0] and IR_ARRAY[1] are the true front
+  if(IR_ARRAY[0] == HIGH || IR_ARRAY[1] == HIGH){
+  	ir_enemy_charge();
+  }
+  //Assuming right side
+  else if(IR_ARRAY[2] == HIGH || IR_ARRAY[3] == HIGH){
+		turn_left();  	
+  }
+  //Assuming left side
+  else if(IR_ARRAY[4] == HIGH || IR_ARRAY[5] == HIGH){
+  	turn_right();
+  }
+  //Assuming back side
+  else if(IR_ARRAY[6] == HIGH || IR_ARRAY[7] == HIGH){
+  	turn_180();
+  }
+	
+}
+void ir_line_detect(){
+	
+}
+//End Listing Functions
+
+
+
+
+
+
+void setup() {
+  // put your setup code here, to run once:
+  attachInterrupt(digitalPinToInterrupt(), ir_enemy_detect, RISING)		//Because intterrupt can only detect RISING edge on MEGA board, must check condition continuously in function
+  attachInterrupt(digitalPinToInterrupt(), ir_line_detect, RISING)		
+  
+  // Initialize pins for IR sensors
+  pinMode(1, ); // Front
+  pinMode(2, ); // Front
+  
+  pinMode(3, ); // Left
+  pinMode(4, ); // Left
+  
+  pinMode(5, ); // Right
+  pinMode(6, ); // Right
+  
+  pinMode(7, ); // Back
+  pinMode(8, ); // Back
+  
+  // motor pins
+  
+  Robot.begin();
+
+  
+  pinMode(9, OUTPUT);
+  pinMode(10, OUTPUT);
+  pinMode(10, OUTPUT);
+}
+
+
+
+
+void loop() {
+  // put your main code here, to run repeatedly:
+
+
+	while (enemy_NotDetected) 
+  {
+  
+  	motor_degree=60;
+  	// Move 
+  	move_straight();
+    // Turn 60 deg left
+    turn_left(); // LEFT		
+  }
+  
+	// if enemy is detected
+  	// Align front with enemy
+    
+  	// Charge && stay aligned && make sure that robot is within bounds of sumo ring
+  
+}
+
+
