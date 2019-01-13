@@ -3,6 +3,25 @@
 https://www.arduino.cc/en/Reference/RobotLibrary
 
 
+  
+  
+	// if enemy is detected => then IR_Interrupt Enemy
+  	// Align front with enemy
+    
+  	// Charge && stay aligned && make sure that robot is within bounds of sumo ring
+    
+    
+    
+  // if sumo ring bounds are detected => IR_Interrupt Lines/Bounds
+  	// Disable enemy detection
+    
+    // Move backwards
+    
+    // Rotate 180
+    
+    // Re-enable enemy detection
+
+
 //List Constants here
 const int IR_ARRAY[] = {}
 const int motor_speed = 250;
@@ -82,11 +101,15 @@ void ir_enemy_detect(){
 void ir_line_detect(){
 	
 }
+
+trianglePattern(){
+	while (!enemyDetected) {
+    turn_left(); // LEFT
+  	move_straight();
+	}
+	}
+	
 //End Listing Functions
-
-
-
-
 
 
 void setup() {
@@ -119,36 +142,16 @@ void setup() {
 
 
 void loop() {
-  // put your main code here, to run repeatedly:
-
+	//In order to move in triangle, must start to move right, then begin shape
+	motor_degree = 60;
+	turn_right();
+	move_straight();
 
 	// As long as enemy is not detected, continue moving in triangular fashion
-  // (until enemy is sighted)
-	while (!enemyDetected) 
-  {
-  
-  	motor_degree=60;
-  	// Move 
-  	move_straight();
-    // Turn 60 deg left
-    turn_left(); // LEFT		
-  }
-  
-  
-	// if enemy is detected => then IR_Interrupt Enemy
-  	// Align front with enemy
-    
-  	// Charge && stay aligned && make sure that robot is within bounds of sumo ring
-    
-    
-    
-  // if sumo ring bounds are detected => IR_Interrupt Lines/Bounds
-  	// Disable enemy detection
-    
-    // Move backwards
-    
-    // Rotate 180
-    
-    // Re-enable enemy detection
-  
-}
+	//Break when interrupted
+	//Make it a function so it can be called outside of main loop
+	
+	trianglePattern();
+  }  
+
+
