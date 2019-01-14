@@ -1,12 +1,11 @@
-
-#include <ArduinoRobot.h>
+//#include <ArduinoRobot.h>
 
 
 bool opponent_not_detected = true;
 
 void setup()
 {
-  Robot.begin();
+ // Robot.begin();
 
   
   pinMode(7, OUTPUT);
@@ -18,61 +17,73 @@ void setup()
 void loop()
 {
   // default movement algorithm goes here
+
+  //move_straight1();
+  //move_straight2();
+  move_backward1();
+  move_backward2();
+  move_backward3();
+  move_backward4();
   
-  /*
-  while (opponent_not_detected)
-  {
-    //algorithm
-  }
-
-
-
-
-  
-  if (0)
-  {
-    move_straight();
-  }
-  else if (1)
-  {
-    move_backward();
-  }
-  */
-
-
-  
-  /*
-  digitalWrite(8, HIGH);
-  digitalWrite(7, LOW);
-  //Control Speed
-  analogWrite(9, 80);
-  delay(1000);
-  digitalWrite(8, LOW);
-  digitalWrite(7. HIGH);
-  analogWrite(9, 80);
-  delay(1000);
-  */
 }
 
-void move_straight()
+void move_straight1()
 {
   digitalWrite(8, HIGH);
   digitalWrite(7, LOW);
   //Control Speed
-  analogWrite(9, 80);
+  analogWrite(9, 250); //pulse
   delay(1000);
 }
 
-void move_backward()
+
+void move_straight2()
+{
+  digitalWrite(4, HIGH);
+  digitalWrite(5, LOW);
+  //Control Speed
+  analogWrite(3, 250);
+  delay(1000);
+}
+void move_backward1()
 {
   digitalWrite(8, LOW);
   digitalWrite(7, HIGH);
   //copntrol Speed
-  analogWrite(9, 80); //pin 9 pulse modulation (variable speed)
+  analogWrite(9, 250); //pin 9 pulse modulation (variable speed)
   delay(1000);
 }
 
-void turn_left()
+
+void move_backward2()
+{
+  digitalWrite(11, LOW);
+  digitalWrite(12, HIGH);
+  //copntrol Speed
+  analogWrite(13, 250); //pin 9 pulse modulation (variable speed)
+  delay(1000);
+}
+
+
+void move_backward3()
+{
+  digitalWrite(5, LOW);
+  digitalWrite(4, HIGH);
+  //copntrol Speed
+  analogWrite(6, 250); //pin 9 pulse modulation (variable speed)
+  delay(1000);
+}
+
+
+void move_backward4()
+{
+  digitalWrite(2, LOW);
+  digitalWrite(10, HIGH);
+  //copntrol Speed
+  analogWrite(3, 250); //pin 9 pulse modulation (variable speed)
+  delay(1000);
+}
+/*void turn_left()
 {
     Robot.turn(-90); //make bot turn 90 degrees left
     delay(1000);
@@ -89,3 +100,4 @@ void turn_180()
     Robot.turn(180); //make bot turn 180 degrees right
     delay(1000);
 }
+*/
