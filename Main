@@ -1,156 +1,212 @@
 // ARDUINO CODE for Tofumo (Sumo bot) 
-#include <ArduinoRobot.h>
-
-
-//List Constants here
-const int IR_ARRAY[] = {}
-const int motor_speed = 250;
-		//ETC.
-//End Listing Constants
+const int SPEED = 250; // Max speed = 250 for now   
+const int TURN_TIME = 100; // Delay applied when turning robot
+const int TURN_TIME_180 = 200; // Delay applied when turning 180 degrees
+const int IR_ARRAY[] = {};
 
 // List Variables here
 bool enemy_NotDetected = true;
 int motor_degree = 0;
 //End Listing Variables
 
-// List Functions here
 
-// Moves robot straight ahead (with respect to front)
-void move_straight()
-{
-  digitalWrite(8, HIGH);
-  digitalWrite(7, LOW);
-  //Control Speed
-  analogWrite(9, motor_speed);
-  delay(1000);
+struct Motors{
+  int variable_speed;
+  int high;
+  int low;
+  };
+
+  Motors motor1 = {9, 8, 7};
+  Motors motor2 = {13, 11, 12};
+  Motors motor3 = {6, 5, 4};
+  Motors motor4 = {15, 10, 14};
+
+/*
+ *  Motor 1             Motor 2
+ *          0 ====== 0
+ *            ======
+ *            ======
+ *          0 ====== 0
+ *  Motor 3             Motor 4
+*/
+void setup(){
+  // put your setup code here, to run once:
+  attachInterrupt(digitalPinToInterrupt(), ir_enemy_detect, RISING)   //Because intterrupt can only detect RISING edge on MEGA board, must check condition continuously in function
+  attachInterrupt(digitalPinToInterrupt(), ir_line_detect, RISING)    
+  attachInterrupt(digitalPinToInterrupt(), stop, RISING)
+  attachInterrupt(digitalPinToInterrupt(), start, RISING)
+  
+  // Initialize pins for IR sensors
+  pinMode(IR_ARRAY[0], INPUT); // Front
+  pinMode(IR_ARRAY[1], INPUT); // Front
+  
+  pinMode(IR_ARRAY[2], INPUT); // Left
+  pinMode(IR_ARRAY[3], INPUT); // Left
+  
+  pinMode(IR_ARRAY[4], INPUT); // Right
+  pinMode(IR_ARRAY[5], INPUT); // Right
+  
+  pinMode(IR_ARRAY[6], INPUT); // Back
+  pinMode(IR_ARRAY[7], INPUT); // Back
+  
+ //Motor control
+    //MOTOR 1
+  pinMode(9, OUTPUT);     //PWM/Speed Control
+  pinMode(8, OUTPUT);     //Input 4
+  pinMode(7, OUTPUT);     //Input 3
+    //MOTOR 2
+  pinMode(13, OUTPUT);     //PWM/Speed Control
+  pinMode(11, OUTPUT);     //Input 2
+  pinMode(12, OUTPUT);     //Input 1
+    //MOTOR 3
+  pinMode(6, OUTPUT);     //PWM/Speed Control
+  pinMode(5, OUTPUT);     //Input 4
+  pinMode(4, OUTPUT);     //Input 3
+    //MOTOR 4
+  pinMode(15, OUTPUT);     //PWM/Speed Control
+  pinMode(10, OUTPUT);     //Input 2 
+  pinMode(14, OUTPUT);     //Input 1
+
+  analogWrite(9, SPEED);
+  analogWrite(13, SPEED);
+  analogWrite(6, SPEED);
+  analogWrite(15, SPEED);
 }
 
-// Moves robot backwards (with respect to front)
-void move_backward()
-{
-  digitalWrite(8, LOW);
-  digitalWrite(7, HIGH);
-  //control Speed
-  analogWrite(9, motor_speed); //pin 9 pulse modulation (variable speed)
-  delay(1000);
+void forward(){
+  digitalWrite(motor1.high, HIGH);
+  digitalWrite(motor1.low, LOW);
+  digitalWrite(motor2.high, HIGH);
+  digitalWrite(motor2.low, LOW);
+  digitalWrite(motor3.high, HIGH);
+  digitalWrite(motor3.low, LOW);
+  digitalWrite(motor4.high, HIGH);
+  digitalWrite(motor4.low, LOW);
+  }
+void backward() {
+  digitalWrite(motor1.high, LOW);
+  digitalWrite(motor1.low, HIGH);
+  digitalWrite(motor2.high, LOW);
+  digitalWrite(motor2.low, HIGH);
+  digitalWrite(motor3.high, LOW);
+  digitalWrite(motor3.low, HIGH);
+  digitalWrite(motor4.high, LOW);
+  digitalWrite(motor4.low, HIGH);
 }
+void stop(){
+  digitalWrite(motor1.high, LOW);
+  digitalWrite(motor1.low, LOW);
+  digitalWrite(motor2.high, LOW);
+  digitalWrite(motor2.low, LOW);
+  digitalWrite(motor3.high, LOW);
+  digitalWrite(motor3.low, LOW);
+  digitalWrite(motor4.high, LOW);
+  digitalWrite(motor4.low, LOW);
+  }
 
-// Turns robot to left
-void turn_left()
-{
-    Robot.turn(motor_degree); //make bot turn 90 degrees left
-    delay(1000);
-}
+//For turn, make single function
+//If true, turn right, else left
+//Turn Right -> Motors 1 and 4 forward, 2 and 3 back
+void turn(bool right){
+  if(true){
+    forward(motor1);
+    forward(motor4);
+    backward(motor2);
+    backward(motor3);
+    delay(TURN_TIME);         
+    stop(motor1);
+    stop(motor4);
+    stop(motor2);
+    stop(motor3);
+    }
+  else{
+    forward(motor2);
+    forward(motor3);
+    backward(motor1);
+    backward(motor4);
+    delay(TURN_TIME);
+    stop(motor1);
+    stop(motor4);
+    stop(motor2);
+    stop(motor3);
+    }
+  }
 
-// Turns robot to right
-void turn_right()
-{
-    Robot.turn(motor_degree); //make bot turn 90 degrees right
-    delay(1000);
-}
+void turn_180(){
+    forward(motor1);
+    forward(motor4);
+    backward(motor2);
+    backward(motor3);
+    delay(TURN_TIME_180);         
+    stop(motor1);
+    stop(motor4);
+    stop(motor2);
+    stop(motor3);  
+  }
 
-void turn_180()
-{
-    Robot.turn(180); //make bot turn 180 degrees right
-    delay(1000);
-}
+void triangleMovement(){
+  while (enemy_NotDetected) 
+  {
+     forward();
+     turn(false);
+     forward();
+     turn(false);
+     forward();
+     turn(false);
+  } 
+  }
 
 void ir_enemy_charge(){
-	while(IR_ARRAY[0] == HIGH || IR_ARRAY[1] == HIGH){
-  	move_straight();
+  while(IR_ARRAY[0] == HIGH || IR_ARRAY[1] == HIGH){
+    forward();
   }
   //If Enemy leaves... return to triangular movement
-  loop();
+  triangleMovement();
 }
 
 void ir_enemy_detect(){
-	//Determine while IR sensor was triggered HIGH
+  //Determine while IR sensor was triggered HIGH
   //Make that IR sensor the condition for the loop
   //Assuming IR_ARRAY[0] and IR_ARRAY[1] are the true front
   if(IR_ARRAY[0] == HIGH || IR_ARRAY[1] == HIGH){
-  	ir_enemy_charge();
+    ir_enemy_charge();
   }
   //Assuming right side
   else if(IR_ARRAY[2] == HIGH || IR_ARRAY[3] == HIGH){
-		turn_left();  	
+    turn(false);    
   }
   //Assuming left side
   else if(IR_ARRAY[4] == HIGH || IR_ARRAY[5] == HIGH){
-  	turn_right();
+    turn(true);
   }
   //Assuming back side
   else if(IR_ARRAY[6] == HIGH || IR_ARRAY[7] == HIGH){
-  	turn_180();
+    turn_180();
   }
-	
 }
 void ir_line_detect(){
-	
-}
-//End Listing Functions
-
-
-
-
-
-
-void setup() {
-  // put your setup code here, to run once:
-  attachInterrupt(digitalPinToInterrupt(), ir_enemy_detect, RISING)		//Because intterrupt can only detect RISING edge on MEGA board, must check condition continuously in function
-  attachInterrupt(digitalPinToInterrupt(), ir_line_detect, RISING)		
   
-  // Initialize pins for IR sensors
-  pinMode(IR_ARRAY[0], ); // Front
-  pinMode(IR_ARRAY[1], ); // Front
-  
-  pinMode(IR_ARRAY[2], ); // Left
-  pinMode(IR_ARRAY[3], ); // Left
-  
-  pinMode(IR_ARRAY[4], ); // Right
-  pinMode(IR_ARRAY[5], ); // Right
-  
-  pinMode(IR_ARRAY[6], ); // Back
-  pinMode(IR_ARRAY[7], ); // Back
-  
-  // motor pins
-  
-  Robot.begin();
-
-  
-  pinMode(9, OUTPUT);
-  pinMode(10, OUTPUT);
-  pinMode(10, OUTPUT);
 }
 
-
-
+start(){
+	//Five second delay for start of match
+	delay(5000);
+}
 
 void loop() {
-  // put your main code here, to run repeatedly:
-
-
-	// As long as enemy is not detected, continue moving in triangular fashion
+  // As long as enemy is not detected, continue moving in triangular fashion
   // (until enemy is sighted)
-	while (enemy_NotDetected) 
-  {
-  
-  	motor_degree=60;
-  	// Move 
-  	move_straight();
-    // Turn 60 deg left
-    turn_left(); // LEFT		
-  }
-  
-  
-	// if enemy is detected => then IR_Interrupt Enemy
-  	// Align front with enemy
+  turn(true);
+  triangleMovement();
+  // if enemy is detected => then IR_Interrupt Enemy
+  // Align front with enemy
     
-  	// Charge && stay aligned && make sure that robot is within bounds of sumo ring
+  // Charge && stay aligned && make sure that robot is within bounds of sumo ring
     
     
     
   // if sumo ring bounds are detected => IR_Interrupt Lines/Bounds
-  	// Disable enemy detection
+    // Disable enemy detection
     
     // Move backwards
     
@@ -159,7 +215,3 @@ void loop() {
     // Re-enable enemy detection
   
 }
-
-
-
-
