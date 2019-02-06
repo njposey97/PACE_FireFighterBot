@@ -31,10 +31,10 @@ struct Motors{
 */
 void setup(){
   // put your setup code here, to run once:
-  attachInterrupt(digitalPinToInterrupt(), ir_enemy_detect, RISING)   //Because intterrupt can only detect RISING edge on MEGA board, must check condition continuously in function
-  attachInterrupt(digitalPinToInterrupt(), ir_line_detect, RISING)    
-  attachInterrupt(digitalPinToInterrupt(), stop, RISING)
-  attachInterrupt(digitalPinToInterrupt(), start, RISING)
+  attachInterrupt(digitalPinToInterrupt(), ir_enemy_detect, RISING);   //Because intterrupt can only detect RISING edge on MEGA board, must check condition continuously in function
+  attachInterrupt(digitalPinToInterrupt(), ir_line_detect, RISING);    
+  attachInterrupt(digitalPinToInterrupt(), stop, RISING);
+  attachInterrupt(digitalPinToInterrupt(), start, RISING);
   
   // Initialize pins for IR sensors
   pinMode(IR_ARRAY[0], INPUT); // Front
