@@ -33,7 +33,7 @@ void setup(){
   // put your setup code here, to run once:
   attachInterrupt(digitalPinToInterrupt(), ir_enemy_detect, RISING);   //Because intterrupt can only detect RISING edge on MEGA board, must check condition continuously in function
   attachInterrupt(digitalPinToInterrupt(), ir_line_detect, RISING);    
-  attachInterrupt(digitalPinToInterrupt(), stop, RISING);
+  attachInterrupt(digitalPinToInterrupt(), full_stop, RISING);
   attachInterrupt(digitalPinToInterrupt(), start, RISING);
   
   // Initialize pins for IR sensors
@@ -191,6 +191,12 @@ void ir_line_detect(){
 start(){
 	//Five second delay for start of match
 	delay(5000);
+}
+
+//To be used with stop button
+full_stop(){
+	stop();
+	wait(NULL);
 }
 
 void loop() {
